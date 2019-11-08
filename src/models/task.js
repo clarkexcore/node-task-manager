@@ -13,17 +13,12 @@ const taskSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'User'
     }
+}, {
+    timestamps: true
 });
-
-taskSchema.pre('save', async function(next){
-    const task = this;
-
-    console.log("Yooooooo");
-
-    next();
-})
 
 const Task = mongoose.model('Task', taskSchema);
 
