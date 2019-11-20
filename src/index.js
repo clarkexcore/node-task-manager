@@ -7,17 +7,29 @@ const taskRouter = require('./routers/task');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// app.use((req, res, next) => {
-//     if(req.method === "GET"){
-//         res.send("No work, you get out.");
-//     } else {
-//         next();
-//     }
-// })
 
-// app.use((req, res, next) => {
-//     res.status(503).send("We under maintenance, come back later foo.");
-// })
+const multer = require('multer');
+const upload = multer({
+    dest: 'images',
+    limits: {
+        fileSize: 3000000
+    },
+    fileFilter(req, file, cb){
+        if(!file.originalname.match(/\.(doc|docx)$/)){
+            return cb(new Error("Please upload word document"));
+        }
+
+        cb(undefined, true);
+
+        // cb( new Error('File must be a PDF.'));
+        // cb(undefined, true);
+        // cb(undefined, false);
+    }
+})
+
+app.post('/upload', upload.single('upload'), (req, res) => {
+    res.send();
+})
 
 app.use(express.json());
 app.use(userRouter);
@@ -26,18 +38,3 @@ app.use(taskRouter);
 app.listen(port, () => {
     console.log(`Server is up on Port: ${port}`);
 })
-
-// const Task = require('./models/task');
-// const User = require('./models/user');
-
-// const main = async () => {
-//     // const task = await Task.findById('5dc3451b7bebdd19568677c3');
-//     // await task.populate('owner').execPopulate();
-//     // console.log(task);
-//     const user = await User.findById('5dc34415effbb218ba9447d5');
-//     await user.populate('tasks').execPopulate();
-//     console.log(user.tasks);
-
-// }
-
-// main();
